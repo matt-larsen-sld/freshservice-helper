@@ -27,6 +27,6 @@ setup(
     packages=find_packages(include=["fshelper", "fshelper.*"]),
     setup_requires=[],
     url="https://github.com/matt-larsen-sld/fshelper",
-    version="0.0.1",
+    version="0.0.2",
     zip_safe=False,
 )
