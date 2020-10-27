@@ -28,6 +28,6 @@ setup(
     package_dir={"": "src"},
     setup_requires=[],
     url="https://github.com/matt-larsen-sld/fshelper",
-    version="0.0.2",
+    version="0.0.3",
     zip_safe=False,
 )
