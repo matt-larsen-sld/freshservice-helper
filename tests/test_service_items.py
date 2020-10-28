@@ -120,10 +120,8 @@ def test_service_items_create_called_with_create_command_in_url(
         service_items_end_point.send_request = MagicMock()
         service_items_end_point.send_request.return_value = {"foo": "bar"}
         _ = service_items_end_point.create({"blah": "blah"})
-        assert any(
-            service_items_end_point.create_command in call_args
-            for call_args in service_items_end_point.send_request.call_args.args
-        )
+        call_args = [arg for arg in service_items_end_point.send_request.call_args]
+        assert service_items_end_point.create_command in str(call_args)
 
 
 def test_service_items_send_request_not_called_when_env_var_not_set(
