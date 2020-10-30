@@ -5,4 +5,9 @@ __email__ = 'matt.larsen@connorgp.com'
 __version__ = '0.0.4'
 
 from .api import Credential, RequestService
-from .v2 import ServiceItemsEndPoint, TicketFormFieldsEndPoint, TicketsEndPoint
+from .v2 import (
+    ServiceItemsEndPoint,
+    TicketFormFieldsEndPoint,
+    TicketsEndPoint,
+    AssetsEndPoint,
+)
