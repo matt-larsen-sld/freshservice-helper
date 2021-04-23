@@ -81,6 +81,7 @@ class GenericEndPoint:
     def send_request(self, url, method="GET", data=None):
         if isinstance(data, dict):
             data = json.dumps(data)
+        logger.debug(f"Generating '{method}' request for '{url}'")
         req = Request(method, url, headers=self.DEFAULT_HEADERS, data=data)
         prepped_req = self.request_service.session.prepare_request(req)
         resp = self.request_service.session.send(prepped_req)
