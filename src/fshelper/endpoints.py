@@ -105,7 +105,7 @@ class GenericPluralEndpoint(GenericEndPoint):
         )
 
     def get_all(self, query=None):
-        """ Sends a paginated get request for items of the resource type identified by self.resource_key.
+        """Sends a paginated get request for items of the resource type identified by self.resource_key.
         From the list of dict in the response yields the items selected by self.resource_key.
 
         Yields a list of dict items from the response selected by self.resource_key until all page results are returned
