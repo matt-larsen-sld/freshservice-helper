@@ -22,8 +22,10 @@ class GenericEndPoint:
         self.resource_key = None
         self.create_command = None
 
-    def get(self):
-        raise NotImplemented
+    def get(self, identifier):
+        _url = f"{self.extended_url}/{identifier}"
+        response = self.send_request(_url)
+        return response
 
     @property
     def endpoint(self):
