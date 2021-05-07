@@ -60,8 +60,11 @@ def test_generic_plural_end_point_send_request_session_session_methods_called(
     )
 
 
-def test_generic_end_point_get_method_calls_send_request(faker):
+def test_generic_end_point_get_method_calls_send_request(fake_request_service, faker):
     _id = faker.pyint()
-    end_point = MagicMock(GenericEndPoint)
-    _ = end_point.get(_id)
-    assert end_point.send_request.called_once()
+    with fake_request_service as fake_service:
+        end_point = GenericEndPoint(fake_service)
+        _ = end_point.get(_id)
+    assert end_point.request_service.session.prepare_request.called_once()
+    assert end_point.request_service.session.send.called_once()
+

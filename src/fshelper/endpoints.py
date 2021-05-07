@@ -52,21 +52,7 @@ class GenericEndPoint:
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
         if self.fs_create_requests_enabled:
-            try:
-                response = self.send_request(url, method="POST", data=data)
-            except HTTPError as err:
-                logger.error("Error encountered with send_request %s", err)
-                logger.warning(
-                    "send_request called to url '%s' method 'POST' and data %s",
-                    url,
-                    err.request.body,
-                )
-                logger.warning(
-                    "Response: 'status_code' == '%d', 'text' == '%s'",
-                    err.response.status_code,
-                    err.response.text,
-                )
-                raise err
+            response = self.send_request(url, method="POST", data=data)
         else:
             logger.warning(
                 "Environment variable 'ALLOW_FS_CREATE_REQUESTS' must be set to 'True' to allow sending "
@@ -81,14 +67,29 @@ class GenericEndPoint:
         return response
 
     def send_request(self, url, method="GET", data=None):
-        if isinstance(data, dict):
-            data = json.dumps(data)
-        logger.debug(f"Generating '{method}' request for '{url}'")
-        req = Request(method, url, headers=self.DEFAULT_HEADERS, data=data)
-        prepped_req = self.request_service.session.prepare_request(req)
-        resp = self.request_service.session.send(prepped_req)
-        resp.raise_for_status()
-        return resp.json()
+        try:
+            if isinstance(data, dict):
+                data = json.dumps(data)
+            logger.debug("Generating '%s' request for '%s'", method, url)
+            req = Request(method, url, headers=self.DEFAULT_HEADERS, data=data)
+            prepped_req = self.request_service.session.prepare_request(req)
+            resp = self.request_service.session.send(prepped_req)
+            resp.raise_for_status()
+            return resp.json()
+        except HTTPError as err:
+            logger.error("Error encounter with send_request %s", err)
+            logger.warning(
+                "send_request called to url '%s' with method '%s' and data '%s'",
+                url,
+                method,
+                err.request.body,
+            )
+            logger.warning(
+                "Response: 'status_code' == '%d', 'text' == '%s'",
+                err.response.status_code,
+                err.response.text,
+            )
+            raise err
 
 
 class GenericPluralEndpoint(GenericEndPoint):
