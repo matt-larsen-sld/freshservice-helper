@@ -81,6 +81,10 @@ class GenericEndPoint:
         return response
 
     def send_request(self, url, method="GET", data=None):
+        """Send the HTTP request to the FreshService API using a requests library session.
+
+        TODO: Send query strings as a dict for parameters to the requests API.
+        """
         try:
             if isinstance(data, dict):
                 data = json.dumps(data)
@@ -143,6 +147,10 @@ class GenericPluralEndpoint(GenericEndPoint):
                 yield items
 
     def paginate_url(self, query=None, page=1):
+        """Add page and per_page paramters to the query string.
+
+        TODO: Change this to manipulate a dict and handle pagination with the send_request method and that dict.
+        """
         pagination_part = f"page={page}&per_page={self.items_per_page}"
         if query:
             url = f"{self.extended_url}?{pagination_part}&{query}"
