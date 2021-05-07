@@ -19,13 +19,8 @@ class GenericEndPoint:
     def __init__(self, request_service: RequestService):
         self.request_service = request_service
         self._endpoint = ""
-        self.resource_key = None
-        self.create_command = None
-
-    def get(self, identifier):
-        _url = f"{self.extended_url}/{identifier}"
-        response = self.send_request(_url)
-        return response
+        self.resource_key = None  # dictionary key in the API response data for a resource. Used to access item.
+        self.create_command = None  # Some resources extend the endpoint URL with a verb when creating the resource
 
     @property
     def endpoint(self):
@@ -47,6 +42,15 @@ class GenericEndPoint:
             else False
         )
 
+    def get(self, identifier):
+        """Get a single resource from the FS API
+
+        TODO: Check if identifier is already in the extended_url
+        """
+        _url = f"{self.extended_url}/{identifier}"
+        response = self.send_request(_url)
+        return response
+
     def create(self, data: dict) -> dict:
         url = self.extended_url
         if self.create_command is not None:
@@ -64,6 +68,16 @@ class GenericEndPoint:
                 json.dumps(data),
             )
             response = {"service_request": {"id": sys.maxsize}}
+        return response
+
+    def delete(self, identifier):
+        """Delete a resource with the FS API
+
+        TODO: Check if the identifier is already in the extended_url
+        """
+        _method = "DELETE"
+        _url = f"{self.extended_url}/{identifier}"
+        response = self.send_request(_url, method=_method)
         return response
 
     def send_request(self, url, method="GET", data=None):

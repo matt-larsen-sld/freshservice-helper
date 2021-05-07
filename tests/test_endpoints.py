@@ -45,7 +45,7 @@ def test_generic_plural_end_point_get_url_query(faker, mock_request_service):
 
 @patch("fshelper.api.Session", spec=Session)
 def test_generic_plural_end_point_send_request_session_session_methods_called(
-        _, fake_credential, fake_fs_domain
+    _, fake_credential, fake_fs_domain
 ):
     patched_request_service = RequestService(fake_credential, fake_fs_domain)
     with patched_request_service as request_service:
@@ -55,8 +55,8 @@ def test_generic_plural_end_point_send_request_session_session_methods_called(
     assert plural_endpoint.request_service.session.prepare_request.called is True
     assert plural_endpoint.request_service.session.send.called is True
     assert (
-            plural_endpoint.request_service.session.send.return_value.raise_for_status.called
-            is True
+        plural_endpoint.request_service.session.send.return_value.raise_for_status.called
+        is True
     )
 
 
@@ -67,4 +67,3 @@ def test_generic_end_point_get_method_calls_send_request(fake_request_service, f
         _ = end_point.get(_id)
     assert end_point.request_service.session.prepare_request.called_once()
     assert end_point.request_service.session.send.called_once()
-
