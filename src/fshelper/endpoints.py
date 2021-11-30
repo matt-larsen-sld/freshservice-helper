@@ -113,6 +113,8 @@ class GenericPluralEndpoint(GenericEndPoint):
 
         Yields a list of dict items from the response selected by self.resource_key until all page results are returned
         in the request.
+        TODO: an argument to automatically add "include=type_fields" to the query rather than have the user specifically
+            include that.
         """
         page = 1
         url = self.paginate_url(query, page)

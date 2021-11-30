@@ -3,6 +3,7 @@ from ..endpoints import GenericPluralEndpoint
 
 
 class AssetsEndPoint(GenericPluralEndpoint):
+    """Endpoint for working with FreshService Assets"""
     def __init__(self, request_service: RequestService, display_id=None):
         super(AssetsEndPoint, self).__init__(request_service=request_service)
         self._endpoint = "/api/v2/assets"
