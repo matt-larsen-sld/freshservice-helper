@@ -27,7 +27,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     setup_requires=[],
-    url="https://github.com/matt-larsen-sld/fshelper",
+    url="https://github.com/matt-larsen-sld/freshservice-helper",
     version="0.0.8",
     zip_safe=False,
 )
