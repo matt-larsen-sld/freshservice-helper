@@ -9,14 +9,14 @@ FreshService API usage helper version: "0.1.0"
 *Example:*
 ```python
 credential = Credential('MY_API_KEY', 'X')
-    with RequestService(credential, "mydomain") as request_service:
-        asset_end_point = AssetsEndPoint(request_service)
-        _assets = asset_end_point.get_all("include=type_fields") # gets the type_fields in the response data
-        assets = []
-        for asset_list in _assets:
-            assets.extend(asset_list)
-        licensed_assets = [asset for asset in assets if asset.get("assigned_on") is not None]
-    print(f"{len(licensed_assets)} assets found")
+with RequestService(credential, "mydomain") as request_service:
+    asset_end_point = AssetsEndPoint(request_service)
+    _assets = asset_end_point.get_all("include=type_fields") # gets the type_fields in the response data
+    assets = []
+    for asset_list in _assets:
+        assets.extend(asset_list)
+    licensed_assets = [asset for asset in assets if asset.get("assigned_on") is not None]
+print(f"{len(licensed_assets)} assets found")
 ```
 
 ### Credentials for the FreshService API
