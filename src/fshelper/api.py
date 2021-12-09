@@ -8,8 +8,9 @@ logger = logging.getLogger(__name__)
 class Credential:
     """Facilitate creating a Basic authentication credential for the FreshService API.
 
-       https://api.freshservice.com/#authentication
-     """
+    https://api.freshservice.com/#authentication
+    """
+
     def __init__(self, username=None, password=None):
         """Constructor for a Credential object.
 
@@ -28,6 +29,7 @@ class RequestService:
     Use this class with a context manager or new_session() with a try, except, finally block with
     'RequestService.session.close() in the finally block.
     """
+
     def __init__(self, credential: Credential, domain: str):
         """Constructor for a RequestService object
 
