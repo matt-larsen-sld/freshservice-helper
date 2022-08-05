@@ -17,6 +17,7 @@ def fs_credential_and_domain():
     return credential, domain
 
 
+@pytest.mark.slow
 def test_get_all_assets(fs_credential_and_domain):
     credential, domain = fs_credential_and_domain
     with RequestService(credential, domain) as fs_req_service:
