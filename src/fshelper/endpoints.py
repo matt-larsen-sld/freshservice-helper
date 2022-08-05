@@ -2,7 +2,8 @@ import json
 import logging
 import os
 import sys
-from typing import Optional
+from json import JSONDecodeError
+from typing import Optional, Dict
 
 from requests import Request
 from requests.exceptions import HTTPError
@@ -81,7 +82,7 @@ class GenericEndPoint:
         response = self.send_request(_url, method=_method)
         return response
 
-    def send_request(self, url, method="GET", data=None):
+    def send_request(self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None) -> Dict:
         """Send the HTTP request to the FreshService API using a requests library session.
 
         TODO: Send query strings as a dict for parameters to the requests API.
@@ -94,6 +95,7 @@ class GenericEndPoint:
             prepped_req = self.request_service.session.prepare_request(req)
             resp = self.request_service.session.send(prepped_req)
             resp.raise_for_status()
+            # Not all response objects have json content
             return resp.json()
         except HTTPError as err:
             logger.error("Error encounter with send_request %s", err)
@@ -109,6 +111,16 @@ class GenericEndPoint:
                 err.response.text,
             )
             raise err
+        except JSONDecodeError as excp:
+            logger.exception(excp)
+            logger.info("Not all response objects have json content.")
+            resp_dict = {
+                "status_code": getattr(resp, "status_code", None),
+                "url": getattr(resp, "url", None),
+                "ok": getattr(resp, "ok", None),
+                "reason": getattr(resp, "reason", None),
+            }
+            return resp_dict
 
 
 class GenericPluralEndpoint(GenericEndPoint):

@@ -23,10 +23,10 @@ class AssetsEndPoint(GenericPluralEndpoint):
             url = f"{url}/{self.display_id}"
         return url
 
-    def delete(self, identifier, permanently=False):
+    def delete(self, display_id, permanently=False):
         """Delete an asset with an option to additionally call the endpoint to permanently delete the item."""
         _method = "DELETE"
-        self.display_id = identifier
+        self.display_id = display_id
         _url = f"{self.extended_url}"
         logger.info("Deleting asset with display_id = '%d'", self.display_id)
         response = self.send_request(_url, method=_method)
