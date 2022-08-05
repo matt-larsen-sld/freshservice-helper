@@ -43,3 +43,4 @@ def test_create_asset(fs_credential_and_domain):
         asset_endpoint = AssetsEndPoint(fs_req_service)
         response = asset_endpoint.create()
     pass
+

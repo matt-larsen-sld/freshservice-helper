@@ -1,1 +1,2 @@
-requests
+# for production automation
+-r requirements/production.txt
