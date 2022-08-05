@@ -1,4 +1,6 @@
 import logging
+from typing import Dict, Optional
+
 from ..api import RequestService
 from ..endpoints import GenericPluralEndpoint
 
@@ -13,7 +15,7 @@ class AssetsEndPoint(GenericPluralEndpoint):
         super(AssetsEndPoint, self).__init__(request_service=request_service)
         self._endpoint = "/api/v2/assets"
         self.resource_key = "assets"
-        self.display_id = display_id
+        self.identifier = display_id
         self._items_per_page = 100
 
     @property
@@ -32,7 +34,7 @@ class AssetsEndPoint(GenericPluralEndpoint):
         """
         _method = "DELETE"
         self.display_id = display_id
-        _url = f"{self.extended_url}"
+        _url = f"{self.extended_url}"  # TODO: Leaving off with dealing with the display_id identifier schizophrenia
         logger.info("Deleting asset with display_id = '%d'", self.display_id)
         response = self.send_request(_url, method=_method)
         if permanently:
@@ -48,4 +50,11 @@ class AssetsEndPoint(GenericPluralEndpoint):
         _method = "PUT"
         _url = f"{self.extended_url}/{identifier}/restore"
         response = self.send_request(_url, method=_method)
+        return response
+
+    def get_associated_requests(self, display_id: Optional[int] = None) -> Dict:
+        if display_id is not None:
+            self.identifier = display_id
+        _url = f"{self.item_extended_url}/requests"
+        response = self.send_request(_url)
         return response

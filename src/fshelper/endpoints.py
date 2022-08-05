@@ -183,7 +183,7 @@ class GenericPluralEndpoint(GenericEndPoint):
                 yield items
 
     def paginate_url(self, query=None, page=1):
-        """Add page and per_page paramters to the query string.
+        """Add page and per_page parameters to the query string.
 
         TODO: Change this to manipulate a dict and handle pagination with the send_request method and that dict.
         """

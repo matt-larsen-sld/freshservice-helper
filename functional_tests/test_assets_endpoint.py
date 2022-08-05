@@ -86,3 +86,16 @@ def test_update_asset(fs_credential_and_domain, fs_fake_laptop):
         assert update_response["asset"].get("impact") == impact
         delete_response = asset_endpoint.delete(create_response["asset"].get("display_id"), permanently=True)
         assert delete_response is not None
+
+
+def test_get_associated_requests(fs_credential_and_domain):
+    """Test the method to get a list of associated requests.
+    Uses static data from the FS account.  Not really portable as is.
+    """
+    credential, domain = fs_credential_and_domain
+    with RequestService(credential, domain) as fs_req_service:
+        display_id = 3535
+        asset_endpoint = AssetsEndPoint(fs_req_service, display_id)
+        asset = asset_endpoint.get(display_id)
+        asset_requests = asset_endpoint.get_associated_requests()
+        assert pytest.fail("This test isn't meant to be used with other tests.")
