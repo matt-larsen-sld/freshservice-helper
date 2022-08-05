@@ -76,6 +76,13 @@ def test_update_asset(fs_credential_and_domain, fs_fake_laptop):
     with RequestService(credential, domain) as fs_req_service:
         asset_endpoint = AssetsEndPoint(fs_req_service)
         create_response = asset_endpoint.create(fs_fake_laptop, enabled=True)
-        update_data = {}
-        update_response = asset_endpoint.update(create_response["asset"].get("display_id"), update_data)
-
+        impact = "medium"  # the fs_fake_laptop fixture uses low.
+        update_data = {"impact": impact}
+        update_response = asset_endpoint.update(
+            update_data,
+            create_response["asset"].get("display_id"),
+        )
+        assert update_response["asset"].get("description") == fs_fake_laptop["description"]
+        assert update_response["asset"].get("impact") == impact
+        delete_response = asset_endpoint.delete(create_response["asset"].get("display_id"), permanently=True)
+        assert delete_response is not None

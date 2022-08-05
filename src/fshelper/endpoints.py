@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 from json import JSONDecodeError
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 
 from requests import Request
 from requests.exceptions import HTTPError
@@ -21,6 +21,7 @@ class GenericEndPoint:
     def __init__(self, request_service: RequestService):
         self.request_service = request_service
         self._endpoint = ""
+        self.identifier: Any = None  # Identifier to make the instance of the endpoint specific to a resource.
         self.resource_key = None  # dictionary key in the API response data for a resource. Used to access item.
         self.create_command = None  # Some resources extend the endpoint URL with a verb when creating the resource
 
@@ -35,6 +36,13 @@ class GenericEndPoint:
     @property
     def extended_url(self):
         return f"{self.base_url}{self.endpoint}"
+
+    @property
+    def item_extended_url(self):
+        if self.identifier is None:
+            return self.extended_url
+        else:
+            return f"{self.extended_url}/{self.identifier}"
 
     @property
     def fs_create_requests_enabled(self):
@@ -53,7 +61,7 @@ class GenericEndPoint:
         response = self.send_request(_url)
         return response
 
-    def create(self, data: dict, enabled: Optional[bool] = False) -> dict:
+    def create(self, data: Dict, enabled: Optional[bool] = False) -> Dict:
         url = self.extended_url
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
@@ -80,6 +88,19 @@ class GenericEndPoint:
         _method = "DELETE"
         _url = f"{self.extended_url}/{identifier}"
         response = self.send_request(_url, method=_method)
+        return response
+
+    def update(self, data: Dict, identifier: Optional[int] = None) -> Dict:
+        """Update a resource with the FS API
+
+        :param data: Dict with data to update resource.
+        :param identifier: Optional identifier to make the endpoint specific to particular resource.
+        """
+        if identifier is not None:
+            self.identifier = identifier
+        _method = "PUT"
+        _url = f"{self.item_extended_url}"
+        response = self.send_request(_url, method=_method, data=data)
         return response
 
     def send_request(self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None) -> Dict:

@@ -24,7 +24,12 @@ class AssetsEndPoint(GenericPluralEndpoint):
         return url
 
     def delete(self, display_id, permanently=False):
-        """Delete an asset with an option to additionally call the endpoint to permanently delete the item."""
+        """Delete an asset with an option to additionally call the endpoint to permanently delete the item.
+
+        Overriding the inherited method to include the option for a second API request to permanently delete the asset.
+        :param display_id: Display ID for the asset to be deleted
+        :param permanently: Flag to make a second call to the API to permanently delete the asset
+        """
         _method = "DELETE"
         self.display_id = display_id
         _url = f"{self.extended_url}"
