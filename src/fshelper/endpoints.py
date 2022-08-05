@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+from typing import Optional
 
 from requests import Request
 from requests.exceptions import HTTPError
@@ -51,16 +52,16 @@ class GenericEndPoint:
         response = self.send_request(_url)
         return response
 
-    def create(self, data: dict) -> dict:
+    def create(self, data: dict, enabled: Optional[bool] = False) -> dict:
         url = self.extended_url
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
-        if self.fs_create_requests_enabled:
+        if self.fs_create_requests_enabled or enabled:
             response = self.send_request(url, method="POST", data=data)
         else:
             logger.warning(
                 "Environment variable 'ALLOW_FS_CREATE_REQUESTS' must be set to 'True' to allow sending "
-                "FreshService create requests."
+                "FreshService create requests or call with create(enabled=True)."
             )
             logger.info(
                 "Would have sent 'POST' request to '%s' with data '%s'",

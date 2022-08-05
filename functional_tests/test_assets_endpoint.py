@@ -34,3 +34,12 @@ def test_get_single_asset(fs_credential_and_domain):
         asset_endpoint = AssetsEndPoint(fs_req_service)
         asset = asset_endpoint.get(1)
     assert asset["asset"]["display_id"] == 1
+
+
+@pytest.mark.skip
+def test_create_asset(fs_credential_and_domain):
+    credential, domain = fs_credential_and_domain
+    with RequestService(credential, domain) as fs_req_service:
+        asset_endpoint = AssetsEndPoint(fs_req_service)
+        response = asset_endpoint.create()
+    pass
