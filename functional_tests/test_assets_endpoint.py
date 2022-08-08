@@ -88,6 +88,7 @@ def test_update_asset(fs_credential_and_domain, fs_fake_laptop):
         assert delete_response is not None
 
 
+# @pytest.mark.skip
 def test_get_associated_requests(fs_credential_and_domain):
     """Test the method to get a list of associated requests.
     Uses static data from the FS account.  Not really portable as is.

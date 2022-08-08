@@ -52,12 +52,14 @@ class GenericEndPoint:
             else False
         )
 
-    def get(self, identifier):
+    def get(self, identifier: Any = None) -> Dict:
         """Get a single resource from the FS API
 
         TODO: Check if identifier is already in the extended_url
         """
-        _url = f"{self.extended_url}/{identifier}"
+        if identifier is not None:
+            self.identifier = identifier
+        _url = f"{self.item_extended_url}"
         response = self.send_request(_url)
         return response
 
@@ -80,17 +82,19 @@ class GenericEndPoint:
             response = {"service_request": {"id": sys.maxsize}}
         return response
 
-    def delete(self, identifier):
+    def delete(self, identifier: Any = None) -> Dict:
         """Delete a resource with the FS API
 
         TODO: Check if the identifier is already in the extended_url
         """
         _method = "DELETE"
+        if identifier is not None:
+            self.identifier = identifier
         _url = f"{self.extended_url}/{identifier}"
         response = self.send_request(_url, method=_method)
         return response
 
-    def update(self, data: Dict, identifier: Optional[int] = None) -> Dict:
+    def update(self, data: Dict, identifier: Any = None) -> Dict:
         """Update a resource with the FS API
 
         :param data: Dict with data to update resource.
