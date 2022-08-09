@@ -1,3 +1,6 @@
+# 0.2.1
+Add Asset Types endpoint 
+
 # 0.2.0
 Extended assets endpoint functionality
 
