@@ -107,7 +107,9 @@ class GenericEndPoint:
         response = self.send_request(_url, method=_method, data=data)
         return response
 
-    def send_request(self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None) -> Dict:
+    def send_request(
+        self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None
+    ) -> Dict:
         """Send the HTTP request to the FreshService API using a requests library session.
 
         TODO: Send query strings as a dict for parameters to the requests API.

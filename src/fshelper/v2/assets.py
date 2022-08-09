@@ -18,7 +18,9 @@ class AssetsEndPoint(GenericPluralEndpoint):
         self.identifier = identifier
         self._items_per_page = 100
 
-    def delete(self, display_id: Optional[int] = None, permanently: Optional[bool] = False) -> Dict:
+    def delete(
+        self, display_id: Optional[int] = None, permanently: Optional[bool] = False
+    ) -> Dict:
         """Delete an asset with an option to additionally call the endpoint to permanently delete the item.
 
         Overriding the inherited method to include the option for a second API request to permanently delete the asset.

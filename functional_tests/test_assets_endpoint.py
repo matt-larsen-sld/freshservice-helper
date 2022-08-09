@@ -12,7 +12,7 @@ from src.fshelper import (
 )
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def faker_seed():
     return randint(111, 999)
 
@@ -29,7 +29,7 @@ def fs_fake_laptop(faker) -> Dict:
         "type_fields": {
             "product_11000293266": 11000010554,
             "asset_state_11000293266": "Sold",
-        }
+        },
     }
     # TODO: type_fields.product_... and type_fields.asset_state_... creates lock in to our tenant.
     return data
@@ -68,7 +68,9 @@ def test_create_delete_asset(fs_credential_and_domain, fs_fake_laptop):
         asset_endpoint = AssetsEndPoint(fs_req_service)
         response = asset_endpoint.create(fs_fake_laptop, enabled=True)
         assert response["asset"].get("name") == fs_fake_laptop.get("name")
-        delete_response = asset_endpoint.delete(response["asset"].get("display_id"), permanently=True)
+        delete_response = asset_endpoint.delete(
+            response["asset"].get("display_id"), permanently=True
+        )
         assert delete_response is not None
 
 
@@ -83,9 +85,13 @@ def test_update_asset(fs_credential_and_domain, fs_fake_laptop):
             update_data,
             create_response["asset"].get("display_id"),
         )
-        assert update_response["asset"].get("description") == fs_fake_laptop["description"]
+        assert (
+            update_response["asset"].get("description") == fs_fake_laptop["description"]
+        )
         assert update_response["asset"].get("impact") == impact
-        delete_response = asset_endpoint.delete(create_response["asset"].get("display_id"), permanently=True)
+        delete_response = asset_endpoint.delete(
+            create_response["asset"].get("display_id"), permanently=True
+        )
         assert delete_response is not None
 
 
