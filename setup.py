@@ -28,6 +28,6 @@ setup(
     package_dir={"": "src"},
     setup_requires=[],
     url="https://github.com/matt-larsen-sld/freshservice-helper",
-    version="0.2.1",
+    version="0.2.2",
     zip_safe=False,
 )

@@ -27,8 +27,6 @@ class GenericEndPoint:
         """string extension from the base of the URL specific to each resource"""
         self.identifier: Any = None
         """Identifier to make the instance of the endpoint specific to a resource."""
-        self.resource_key = None
-        """Dictionary key used in the return data for a resource.  Used to access the resource in the return data"""
         self.create_command = None
         """Some resources extend the endpoint URL with a verb when creating the resource"""
 
@@ -163,6 +161,8 @@ class GenericPluralEndpoint(GenericEndPoint):
     def __init__(self, request_service: RequestService):
         super(GenericPluralEndpoint, self).__init__(request_service)
         self._items_per_page = None
+        self.resource_key = None
+        """Dictionary key used in the return data for a resource.  Used to access the resource in the return data"""
 
     @property
     def items_per_page(self):

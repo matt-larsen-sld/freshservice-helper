@@ -1,3 +1,6 @@
+# 0.2.2
+Add Locations endpoint 
+
 # 0.2.1
 Add Asset Types endpoint 
 
