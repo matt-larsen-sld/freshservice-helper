@@ -1,3 +1,6 @@
+# 0.2.0
+Extended assets endpoint functionality
+
 # 0.1.0
 Delete capability for asset endpoints
 
