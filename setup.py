@@ -16,7 +16,11 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     description="FreshService API usage helper",
-    install_requires=["requests", ],
+    install_requires=[
+        "requests==2.26.0",
+        "factory_boy==3.2.1",  # TODO: remove this if it won't be used.
+        "pydantic-factories==1.5.4",
+    ],
     license="MIT license",
     long_description=readme,
     long_description_content_type="text/markdown",
