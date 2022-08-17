@@ -14,7 +14,8 @@ class AssetsEndPoint(GenericPluralEndpoint):
     def __init__(self, request_service: RequestService, identifier=None):
         super(AssetsEndPoint, self).__init__(request_service=request_service)
         self._endpoint = "/api/v2/assets"
-        self.resource_key = "assets"
+        self.plural_resource_key = "assets"
+        self.single_resource_key = "asset"
         self.identifier = identifier
         self._items_per_page = 100
 

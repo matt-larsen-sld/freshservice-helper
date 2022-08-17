@@ -6,7 +6,8 @@ class ServiceItemsEndPoint(GenericPluralEndpoint):
     def __init__(self, request_service: RequestService, display_id=None):
         super(ServiceItemsEndPoint, self).__init__(request_service=request_service)
         self._endpoint = "/api/v2/service_catalog/items"
-        self.resource_key = "service_items"
+        self.plural_resource_key = "service_items"
+        self.single_resource_key = "service_item"
         self.display_id = display_id
         self.create_command = "place_request"
 

@@ -29,6 +29,8 @@ class GenericEndPoint:
         """Identifier to make the instance of the endpoint specific to a resource."""
         self.create_command = None
         """Some resources extend the endpoint URL with a verb when creating the resource"""
+        self.single_resource_key = None
+        """dict key for a single resource when returned from the API."""
 
     @property
     def endpoint(self):
@@ -161,8 +163,10 @@ class GenericPluralEndpoint(GenericEndPoint):
     def __init__(self, request_service: RequestService):
         super(GenericPluralEndpoint, self).__init__(request_service)
         self._items_per_page = None
-        self.resource_key = None
-        """Dictionary key used in the return data for a resource.  Used to access the resource in the return data"""
+        self.plural_resource_key = None
+        """Dictionary key used in the return data for a set of resources.  Used to access the resource in the return 
+        data
+        """
 
     @property
     def items_per_page(self):
@@ -173,11 +177,11 @@ class GenericPluralEndpoint(GenericEndPoint):
         )
 
     def get_all(self, query=None):
-        """Sends a paginated get request for items of the resource type identified by self.resource_key.
-        From the list of dict in the response yields the items selected by self.resource_key.
+        """Sends a paginated get request for items of the resource type identified by self.plural_resource_key.
+        From the list of dict in the response yields the items selected by self.plural_resource_key.
 
-        Yields a list of dict items from the response selected by self.resource_key until all page results are returned
-        in the request.
+        Yields a list of dict items from the response selected by self.plural_resource_key until all page results are
+        returned in the request.
         TODO: an argument to automatically add "include=type_fields" to the query rather than have the user specifically
             include that.
         """
@@ -186,7 +190,7 @@ class GenericPluralEndpoint(GenericEndPoint):
         more_results = True
         while more_results:
             result = self.send_request(url)
-            items = result.get(self.resource_key)
+            items = result.get(self.plural_resource_key)
             if len(items) < self.items_per_page:
                 more_results = False
                 yield items
