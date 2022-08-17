@@ -1,1 +1,1 @@
-from .asset import PydanticAssetFactory as AssetFactory
+from .asset import CreateAssetFactory

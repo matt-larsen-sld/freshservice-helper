@@ -18,7 +18,6 @@ setup(
     description="FreshService API usage helper",
     install_requires=[
         "requests==2.26.0",
-        "factory_boy==3.2.1",  # TODO: remove this if it won't be used.
         "pydantic-factories==1.5.4",
     ],
     license="MIT license",
