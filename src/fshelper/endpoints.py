@@ -146,8 +146,9 @@ class GenericEndPoint:
             )
             raise err
         except JSONDecodeError as excp:
-            logger.exception(excp)
-            logger.info("Not all response objects have json content.")
+            logger.info("Not all response objects have json content. The warning for this exception can probably be"
+                        " ignored.")
+            logger.warning(str(excp))
             resp_dict = {
                 "status_code": getattr(resp, "status_code", None),
                 "url": getattr(resp, "url", None),

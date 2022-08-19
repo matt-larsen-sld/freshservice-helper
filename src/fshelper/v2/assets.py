@@ -41,6 +41,7 @@ class AssetsEndPoint(GenericPluralEndpoint):
                 "Permanently deleting asset with display_id = '%d'", self.identifier
             )
             response = self.send_request(_url, method=_method)
+            self.identifier = None
         return response
 
     def restore(self, display_id: Optional[int] = None) -> Dict:

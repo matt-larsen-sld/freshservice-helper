@@ -48,7 +48,7 @@ class AssetUpdate(AssetCreation):
     display_id: Optional[int] = None
 
 
-class AssetFullData(AssetCreation):
+class AssetFullData(AssetUpdate):
     """Model for the full data set of a FreshService asset in the FS API.
     This class includes the additional read-only fields that wouldn't be set when creating or updating an asset through
     the API.
