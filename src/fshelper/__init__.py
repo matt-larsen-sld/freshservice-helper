@@ -2,7 +2,7 @@
 
 __author__ = """Matthew Larsen"""
 __email__ = "matt.larsen@connorgp.com"
-__version__ = "0.2.5"
+__version__ = "0.2.7"
 
 from .api import Credential, RequestService
 from .v2 import (

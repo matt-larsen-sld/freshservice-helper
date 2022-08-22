@@ -2,6 +2,12 @@
 
 [install_requires](https://packaging.python.org/en/latest/discussions/install-requires-vs-requirements/#install-requires-vs-requirements-files)
 
-python3 ./setup.py  sdist bdist_wheel
+`bumpversion`
 
-twine upload -r pypi dist/*<VERSION>*
+from the root of the project:
+`python -m build`
+
+Commit and tag
+
+Upload build to PyPi:
+`twine upload -r pypi dist/*<VERSION>*`
