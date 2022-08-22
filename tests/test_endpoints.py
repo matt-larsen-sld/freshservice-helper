@@ -6,6 +6,7 @@ from requests import Session
 from fshelper import RequestService
 from fshelper.endpoints import GenericEndPoint, GenericPluralEndpoint
 
+
 # https://faker.readthedocs.io/en/master/pytest-fixtures.html
 
 
@@ -64,6 +65,44 @@ def test_generic_end_point_get_method_calls_send_request(fake_request_service, f
     _id = faker.pyint()
     with fake_request_service as fake_service:
         end_point = GenericEndPoint(fake_service)
-        _ = end_point.get(_id)
+
     assert end_point.request_service.session.prepare_request.called_once()
     assert end_point.request_service.session.send.called_once()
+
+
+@patch.object(GenericEndPoint, "send_request")
+def test_create_does_not_send_null_values_in_data_to_send_request(fake_request_service):
+    """Given data that has None values, check that create removes the fields with None values before passing the data
+    to the send_request method
+    """
+    with fake_request_service as fake_rs:
+        end_point = GenericEndPoint(fake_rs)
+        _data = {"a": "a", "b": None}
+        _ = end_point.create(_data, True)
+        _send_request_call_data = end_point.send_request.call_args.kwargs.get("data")
+        assert _send_request_call_data["a"] == "a"
+        with pytest.raises(KeyError):
+            _ = _send_request_call_data[
+                "b"
+            ]  # 'b' should have been removed as a key from data dict.
+
+
+@patch.object(GenericEndPoint, "send_request")
+def test_create_does_not_send_null_values_in_data_to_send_request_recursive(
+    fake_request_service,
+):
+    """Given Dict data that has None values in a nested Dict, check that create removes the fields with None values
+    before passing the data to the send_request method
+    """
+    with fake_request_service as fake_rs:
+        end_point = GenericEndPoint(fake_rs)
+        _data = {"a": "a", "b": None, "c": {"1": 1, "2": None}}
+        _ = end_point.create(_data, True)
+        _send_request_call_data = end_point.send_request.call_args.kwargs.get("data")
+        assert _send_request_call_data["a"] == "a"
+        with pytest.raises(KeyError):
+            _ = _send_request_call_data[
+                "b"
+            ]  # 'b' should have been removed as a key from data dict.
+        with pytest.raises(KeyError):
+            _ = _send_request_call_data["c"]["2"]

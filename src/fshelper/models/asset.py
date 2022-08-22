@@ -8,6 +8,7 @@ class TypeField(BaseModel):
     """Model for the type_fields field of an asset.
     This model will contain custom fields that vary by account.
     """
+
     class Config:
         extra = Extra.allow
 
@@ -44,6 +45,7 @@ class AssetUpdate(AssetCreation):
     These additional fields would be created dynamically by FS when left out of the data to create an asset through
     the API.
     """
+
     id: Optional[int] = None
     display_id: Optional[int] = None
 
@@ -53,6 +55,7 @@ class AssetFullData(AssetUpdate):
     This class includes the additional read-only fields that wouldn't be set when creating or updating an asset through
     the API.
     """
+
     author_type: Optional[str] = None
     assigned_on: Optional[datetime] = None
     created_at: Optional[datetime] = None

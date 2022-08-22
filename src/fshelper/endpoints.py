@@ -19,8 +19,7 @@ class GenericEndPoint:
     }
 
     def __init__(self, request_service: RequestService):
-        """Generic class for accessing a FreshService resource.
-        """
+        """Generic class for accessing a FreshService resource."""
         self.request_service = request_service
         """instance of RequestService to make the API calls with"""
         self._endpoint = ""
@@ -71,11 +70,17 @@ class GenericEndPoint:
         return response
 
     def create(self, data: Dict, enabled: Optional[bool] = False) -> Dict:
+        """Create a FreshService resource with the given data.
+
+        :param data: Data to pass to FreshService API with the values for the resource
+        :param enabled: A toggle to create the resource or not during development.
+        """
         url = self.extended_url
+        _data_to_send = _drop_none(data)
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
         if self.fs_create_requests_enabled or enabled:
-            response = self.send_request(url, method="POST", data=data)
+            response = self.send_request(url, method="POST", data=_data_to_send)
         else:
             logger.warning(
                 "Environment variable 'ALLOW_FS_CREATE_REQUESTS' must be set to 'True' to allow sending "
@@ -146,8 +151,10 @@ class GenericEndPoint:
             )
             raise err
         except JSONDecodeError as excp:
-            logger.info("Not all response objects have json content. The warning for this exception can probably be"
-                        " ignored.")
+            logger.info(
+                "Not all response objects have json content. The warning for this exception can probably be"
+                " ignored."
+            )
             logger.warning(str(excp))
             resp_dict = {
                 "status_code": getattr(resp, "status_code", None),
@@ -211,3 +218,21 @@ class GenericPluralEndpoint(GenericEndPoint):
         else:
             url = f"{self.extended_url}?{pagination_part}"
         return url
+
+
+def _drop_none(data: Dict) -> Dict:
+    """Filter None values from Dict
+
+    :param data: data to strip None values from
+    :return: new object from data with None values removed
+    """
+    if isinstance(data, (list, tuple, set)):
+        return type(data)(_drop_none(x) for x in data if x is not None)
+    elif isinstance(data, dict):
+        return type(data)(
+            (_drop_none(k), _drop_none(v))
+            for k, v in data.items()
+            if k is not None and v is not None
+        )
+    else:
+        return data
