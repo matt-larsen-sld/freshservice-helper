@@ -1,5 +1,5 @@
 # fshelper
-FreshService API usage helper version: 0.2.7
+FreshService API usage helper version: 0.3.0
 
 ## Features
 ### Assets Endpoint v0.1.0

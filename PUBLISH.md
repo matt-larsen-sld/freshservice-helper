@@ -2,7 +2,7 @@
 
 [install_requires](https://packaging.python.org/en/latest/discussions/install-requires-vs-requirements/#install-requires-vs-requirements-files)
 
-`bumpversion`
+`bumpversion <VERSION_INDICATOR>`  [major | minor | patch]
 
 from the root of the project:
 `python -m build`
