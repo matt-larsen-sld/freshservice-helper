@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 from json import JSONDecodeError
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List, Union, Set, Tuple
 
 from requests import Request
 from requests.exceptions import HTTPError
@@ -30,6 +30,8 @@ class GenericEndPoint:
         """Some resources extend the endpoint URL with a verb when creating the resource"""
         self.single_resource_key = None
         """dict key for a single resource when returned from the API."""
+        self.creation_fields: Union[List[str], Set[str], Tuple[str], None] = None
+        """Optional collection of str to specify valid fields to send in create method."""
 
     @property
     def endpoint(self):
@@ -77,6 +79,7 @@ class GenericEndPoint:
         """
         url = self.extended_url
         _data_to_send = _drop_none(data)
+        _data_to_send = self._drop_not_in_creation_fields(_data_to_send)
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
         if self.fs_create_requests_enabled or enabled:
@@ -163,6 +166,20 @@ class GenericEndPoint:
                 "reason": getattr(resp, "reason", None),
             }
             return resp_dict
+
+    def _drop_not_in_creation_fields(self, data: Dict) -> Dict:
+        """drop fields from data Dict that are not in `self.creation_fields` if `self.creation_fields` is not None."""
+        if self.creation_fields is None:  # `self.creation_fields` is None so don't prune fields from data Dict
+            return data
+        for _key in list(data.keys()):
+            if _key not in self.creation_fields:
+                _dropped_value = data.pop(_key)
+                logger.info(
+                    "Removed key '%s' with value '%s' from data as it is not given in `creation_fields`.",
+                    _key,
+                    _dropped_value
+                )
+        return data
 
 
 class GenericPluralEndpoint(GenericEndPoint):

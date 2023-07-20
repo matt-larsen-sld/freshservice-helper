@@ -106,3 +106,20 @@ def test_create_does_not_send_null_values_in_data_to_send_request_recursive(
             ]  # 'b' should have been removed as a key from data dict.
         with pytest.raises(KeyError):
             _ = _send_request_call_data["c"]["2"]
+
+@patch.object(GenericEndPoint, "send_request")
+def test_create_does_not_send_values_not_in_creation_fields(fake_request_service, ):
+    """Given Dict data that has keys that are not in self.creation_fields, and self.creation_fields is not None check
+    that create removes the fields that are not in self.creation_fields before passing the data to the send_request
+    method.
+    """
+    with fake_request_service as fake_rs:
+        end_point = GenericEndPoint(fake_rs)
+        end_point.creation_fields = ["a", "b", ]
+        _data = {"a": "a", "b": "b", "c": {"1": 1, "2": 2}}  # `c` is not in `creation_fields` and should not be sent.
+        _ = end_point.create(_data, True)
+        _send_request_call_data = end_point.send_request.call_args.kwargs.get("data")
+        assert _send_request_call_data["a"] == "a"  # the data from the `a` field was sent; tests that `a`, being in
+        # `creation_fields` was sent
+        with pytest.raises(KeyError):
+            _ = _send_request_call_data["c"]  # `c` should have been removed as a key from the data dict.
