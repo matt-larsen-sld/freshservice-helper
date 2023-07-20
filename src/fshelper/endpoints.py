@@ -32,6 +32,8 @@ class GenericEndPoint:
         """dict key for a single resource when returned from the API."""
         self.creation_fields: Union[List[str], Set[str], Tuple[str], None] = None
         """Optional collection of str to specify valid fields to send in create method."""
+        self.read_only_fields: Union[List[str], Set[str], Tuple[str], None] = None
+        """Read only fields you can't set during creation."""
 
     @property
     def endpoint(self):
@@ -80,6 +82,7 @@ class GenericEndPoint:
         url = self.extended_url
         _data_to_send = _drop_none(data)
         _data_to_send = self._drop_not_in_creation_fields(_data_to_send)
+        _data_to_send = self._drop_read_only_fields(_data_to_send)
         if self.create_command is not None:
             url = f"{url}/{self.create_command}"
         if self.fs_create_requests_enabled or enabled:
@@ -123,7 +126,7 @@ class GenericEndPoint:
         return response
 
     def send_request(
-        self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None
+            self, url: str, method: Optional[str] = "GET", data: Optional[Dict] = None
     ) -> Dict:
         """Send the HTTP request to the FreshService API using a requests library session.
 
@@ -178,6 +181,20 @@ class GenericEndPoint:
                     "Removed key '%s' with value '%s' from data as it is not given in `creation_fields`.",
                     _key,
                     _dropped_value
+                )
+        return data
+
+    def _drop_read_only_fields(self, data: Dict) -> Dict:
+        """Drop fields from `data` with key matching items in `self.read_only_fields`."""
+        if self.read_only_fields is None:
+            return data
+        for _key in list(data.keys()):
+            if _key in self.read_only_fields:
+                _dropped_value = data.pop(_key)
+                logger.info(
+                    "Removed key '%s' with value '%s' from data as it is given as a read only field.",
+                    _key,
+                    _dropped_value,
                 )
         return data
 

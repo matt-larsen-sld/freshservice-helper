@@ -1,9 +1,11 @@
+import json
 import re
 import pytest
 from unittest.mock import MagicMock, patch
 from requests import Request
 
 from fshelper import RequestService
+from fshelper.support.factories import CreateAssetFactory
 from fshelper.v2 import AssetsEndPoint
 
 
@@ -16,7 +18,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_get_called_with_id_as_arg_to_constructor(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """get() method has the ID given to the AssetsEndPoint constructor, and then it's used in the URL argument given
         to the Request object.
@@ -31,7 +33,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_delete_called_with_delete_given_to_request_object(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """DELETE should be an argument when creating the Request object."""
         _id = faker.pyint()
@@ -43,7 +45,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_delete_called_with_id_in_request_object_url(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """The id should be in one of the arguments to create the Request object."""
         _id = faker.pyint()
@@ -65,7 +67,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_delete_permanently_sends_put_request_last(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling delete with permanently == True should call send twice.  First for the delete call with the DELETE
         method, the second a PUT call.
@@ -79,7 +81,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_requests_in_url_for_get_associated_requests(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling get_associated_requests should have an argument to the Request object with 'requests'
         at the end of url argument. https://api.freshservice.com/#list_all_asset_requests
@@ -93,7 +95,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_requests_in_url_for_get_associated_request_with_id_given_to_method(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling get_associated_requests should have an argument to the Request object with 'requests'
         at the end of url argument. This test passed the identifier to the method instead of the constructor.
@@ -108,7 +110,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_restore_in_url_for_request_args(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling restore() should have an argument to the Request object with 'restore' at the end of the url
         argument.
@@ -122,7 +124,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_restore_in_url_for_request_args_with_id_passed_to_restore_method(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling restore() should have an argument to the Request object with 'restore' at the end of the url
         argument.  Passing the ID to the restore method in this test.
@@ -136,7 +138,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_update_called_with_put_id_request_constructor(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling update() should create a PUT request with the ID at the end of the URL."""
         _id = faker.pyint()
@@ -151,7 +153,7 @@ class TestAssets:
 
     @patch("fshelper.endpoints.Request", spec=Request)
     def test_update_called_with_put_id_in_update_method(
-        self, mock_request, mock_request_service, faker
+            self, mock_request, mock_request_service, faker
     ):
         """Calling update() should create a PUT request with the ID at the end of the URL."""
         _id = faker.pyint()
@@ -161,3 +163,24 @@ class TestAssets:
         args, _ = mock_request.call_args
         assert "PUT" in args
         assert any(arg for arg in args if re.search(f".*/{_id}$", arg))
+
+    @patch("fshelper.endpoints.Request", spec=Request)
+    def test_create_asset_called_without_invalid_field(self, mock_request, mock_request_service, faker):
+        """Creating an asset with `discovery_enabled` field set does not send that field.
+        Fix for an issue where that field is present when data is retrieved from the API, but when creating a like
+        asset, we can't send that field back to the API during creation.
+        This is also an exercise of the data field filtering implemented and tested in the endpoints.py module.
+        """
+        _asset = CreateAssetFactory.build()
+        _asset_data = _asset.dict()
+        _asset_data[
+            "discovery_enabled"] = True  # add an invalid field for asset creation to the data sent to the create method
+        with mock_request_service as mock_service:
+            end_point = AssetsEndPoint(mock_service)
+            _ = end_point.create(_asset_data, True)
+            _, _payload = mock_request.call_args
+            _data = json.loads(_payload.get("data"))
+            assert _asset.name == _data[
+                "name"]  # the `name` in the data sent matches the `name` from the mock asset data
+            with pytest.raises(KeyError):
+                _ = _data["discovery_enabled"]

@@ -4,7 +4,6 @@ from typing import Dict, Optional
 from ..api import RequestService
 from ..endpoints import GenericPluralEndpoint
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -18,9 +17,33 @@ class AssetsEndPoint(GenericPluralEndpoint):
         self.single_resource_key = "asset"
         self.identifier = identifier
         self._items_per_page = 100
+        # https://api.freshservice.com/#create_an_asset
+        self.read_only_fields = (
+            "author_type",  # from documentation
+            "created_at",  # from documentation
+            "updated_at",  # from documentation
+            "assigned_on",  # from experience
+            "id",  # from experience
+            "display_id",  # from experience
+        )
+        self.creation_fields = (
+            "workspace_id",
+            "name",  # mandatory
+            "description",
+            "asset_type_id",  # mandatory
+            "asset_tag",
+            "impact",  # "low" | "medium" | "high" - default: "low"
+            "usage_type",  # "permanent" | "loaner" - default: "permanent"
+            "user_id",
+            "location_id",
+            "department_id",
+            "agent_id",
+            "group_id",
+            "type_fields",  # custom fields defined by the customer
+        )
 
     def delete(
-        self, display_id: Optional[int] = None, permanently: Optional[bool] = False
+            self, display_id: Optional[int] = None, permanently: Optional[bool] = False
     ) -> Dict:
         """Delete an asset with an option to additionally call the endpoint to permanently delete the item.
 

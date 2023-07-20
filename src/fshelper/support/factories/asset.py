@@ -8,6 +8,7 @@ class CreateAssetFactory(ModelFactory):
     """Factory class to construct an asset represented as JSON for use when creating an asset through the API.
 
     https://api.freshservice.com/#create_an_asset
+    https://lyz-code.github.io/blue-book/pydantic_factories/
     """
 
     __model__ = AssetCreation
